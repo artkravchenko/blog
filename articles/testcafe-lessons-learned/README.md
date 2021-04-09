@@ -4,18 +4,18 @@ This is a deep dive into workflow with TestCafe, overview of pain points, propos
 
 Contents:
 
-- what to know if you're integrating end-to-end testing at the first time
-- treat tests as carefully as the application's codebase
-- don't rely on implementation details in tests too much
+- [what to know if you're integrating end-to-end testing at the first time](#what-to-know-if-youre-integrating-end-to-end-testing-at-the-first-time)
+- [treat tests as carefully as the application's codebase](#treat-tests-as-carefully-as-the-applications-codebase)
+- [don't rely on implementation details in tests too much](#dont-rely-on-implementation-details-in-tests-too-much)
 - 🚧 don't rely on unstable test data
-- 🚧 use Page Object pattern
-- 🚧 TestCafe APIs to use with caution
+- 🚧 [use Page Object pattern](#-use-page-object-pattern)
+- 🚧 [TestCafe APIs to use with caution](#-testcafe-apis-to-use-with-caution)
 - 🚧 debug effectively
 - 🚧 how to speed up test execution
 - 🚧 useful extensions to TestCafe and recipies
 - 🚧 further reading
 
-The article is continually updated. Feedback is welcome! [Leave a comment]().
+The article is continually updated. Feedback is welcome! [Leave a comment](https://github.com/artkravchenko/blog/discussions/2).
 
 🚧 means "work in progress" i.e. sections are incomplete.
 
@@ -99,13 +99,15 @@ I strongly suggest reading these 3 articles first:
 - [Page object models](https://www.selenium.dev/documentation/en/guidelines_and_recommendations/page_object_models/) in Selenium documentation
 - [Domain specific language](https://www.selenium.dev/documentation/en/guidelines_and_recommendations/domain_specific_language/) in Selenium documentation
 
+These articles do a great job describing what Page Object is and shape its usage scenarios. I'll focus on differences with other approaches and provide real-world examples with TestCafe.
+
 Reading [Page Model](https://devexpress.github.io/testcafe/documentation/guides/concepts/page-model.html) article in TestCafe documentation is not enough. That article is focused on code samples which are too simplified. That doesn't draw the whole picture, and I discovered that it led people to wrong assumptions about the pattern.
 
 ### Drawbacks of inlining implementation details
 
 Page Objects describe public API of elements on the page, so your tests can rely on it. Compare the two: (1) rely on **what**'s provided and (2) rely on **how** it's implemented.
 
-Let's assume that we assert a text field based on Material UI's [TextField](https://material-ui.com/components/text-fields/). It might have label, value, placeholder, helper text, contextual action, required state, disabled state, error state, and loading state. It's a fairly basic UI element, yet it has lots of aspects.
+Let's assume that we assert a text field based on Material UI's [`TextField`](https://material-ui.com/components/text-fields/). It might have label, value, placeholder, helper text, contextual action, required state, disabled state, error state, focused state, and loading state. It's a fairly basic UI element, yet it has lots of aspects.
 
 When we rely on **how** text field expresses its state in the DOM in each test, we spread text field's implementation details (2) across the codebase. This increases cognitive complexity and makes onboarding more difficult. Sometimes these states can't be retrieved in one line of code, but even when they can, it generally makes tests less readable, especially for another person after half a year.
 
@@ -115,7 +117,7 @@ When we inline implementation details instead of abstracting them, we tend to ch
 
 When implementation details change, we have to find each affected test and fix it. It's a matter of "when", not "if". When your tests live long, they face breaking changes of libraries, migration to other libraries, introducing additional libraries for special cases, and different people. It's beneficial to leave some room for these long-term events.
 
-### 🚧 Drawbacks of using helper functions
+### 🚧 Drawbacks of using helper functions instead of Page Object
 
 ### 🚧 TestCafe specifics to Page Object pattern
 
