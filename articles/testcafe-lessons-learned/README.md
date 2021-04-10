@@ -15,7 +15,7 @@ Contents:
 - 🚧 useful extensions to TestCafe and recipies
 - 🚧 further reading
 
-The article is continually updated. Feedback is welcome! [Leave a comment](https://github.com/artkravchenko/blog/discussions/2).
+The article is continually updated. [Leave a comment](https://github.com/artkravchenko/blog/discussions/2). Give any feedback or ask questions. Let me know your use cases!
 
 🚧 means "work in progress" i.e. sections are incomplete.
 
@@ -101,15 +101,13 @@ I strongly suggest reading these 3 articles first:
 
 These articles do a great job describing what Page Object is and shape its usage scenarios. I'll focus on differences with other approaches and provide real-world examples with TestCafe.
 
-Reading [Page Model](https://devexpress.github.io/testcafe/documentation/guides/concepts/page-model.html) article in TestCafe documentation is not enough. That article is focused on code samples which are too simplified. That doesn't draw the whole picture, and I discovered that it led people to wrong assumptions about the pattern.
+Reading [Page Model](https://devexpress.github.io/testcafe/documentation/guides/concepts/page-model.html) article in TestCafe documentation alone is not enough, because it lacks explanation of the pattern. That doesn't draw the whole picture, and I discovered that it led people to wrong assumptions about the pattern.
 
-### Drawbacks of inlining implementation details
-
-Page Objects describe public API of elements on the page, so your tests can rely on it. Compare the two: (1) rely on **what**'s provided and (2) rely on **how** it's implemented.
+### Drawbacks of putting `Selector`s in the tests
 
 Let's assume that we assert a text field based on Material UI's [`TextField`](https://material-ui.com/components/text-fields/). It might have label, value, placeholder, helper text, contextual action, required state, disabled state, error state, focused state, and loading state. It's a fairly basic UI element, yet it has lots of aspects.
 
-When we rely on **how** text field expresses its state in the DOM in each test, we spread text field's implementation details (2) across the codebase. This increases cognitive complexity and makes onboarding more difficult. Sometimes these states can't be retrieved in one line of code, but even when they can, it generally makes tests less readable, especially for another person after half a year.
+When we rely on how text field expresses its state in the DOM in each test, we spread text field's implementation details across the codebase. This increases cognitive complexity and makes onboarding more difficult. Sometimes these states can't be retrieved in one line of code, but even when they can, it generally makes tests less readable, especially for another person after half a year.
 
 You might have lots of different components, and each of them expresses the state in a special way. You have to keep in mind or double check all such details while writing tests. When you've made a mistake, most of the time you find this out after tens of seconds or even minutes, not immediately.
 
@@ -160,5 +158,18 @@ Summary:
 
 ## 🚧 Debug effectively
 ## 🚧 How to speed up test execution
-## 🚧 Useful extensions to TestCafe and recipies
+## 🚧 Useful extensions to TestCafe and recipes
+
+### How to log all browser network requests per test
+### How to fail tests by default if an error notification appears
+### How to save all browser logs per test
+### How to open the browser with the same viewport size on CI and locally
+### How to generate tests dynamically
+### How to integrate TestCafe with Bitbucket Pipelines
+### How to configure tests and utilities based on user roles
+### How to resolve TypeScript modules relative to the root to avoid `../../`
+### How to perform multiple custom assertions in one step
+
 ## 🚧 Further reading
+
+- [Conditional Testing | Cypress Documentation](https://docs.cypress.io/guides/core-concepts/conditional-testing)
