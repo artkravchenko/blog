@@ -144,7 +144,7 @@ When you want to extend `Selector`, you typically model something specific to yo
 For these purposes, use Page Object instead.
 
 <details>
-  <summary>🚧 Example with `Selector::addCustomMethods()`</summary>
+  <summary>:construction: Example with <code>Selector::addCustomMethods()</code></summary>
   
   ```typescript
 import { Selector } from 'testcafe';
