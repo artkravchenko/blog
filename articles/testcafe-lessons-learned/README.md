@@ -143,8 +143,85 @@ When you want to extend `Selector`, you typically model something specific to yo
 
 For these purposes, use Page Object instead.
 
-- 🚧 [Example with `Selector::addCustomMethods()`](https://www.typescriptlang.org/play?target=99#code/JYWwDg9gTgLgBAbzgZQKYBtUGMbTgXzgDMoIQ4ByGVAZxiwEMjUKBuAKHeADtqoiGWVHADCDTNwAmDKGkw48qAB7UpNFBmy4oidnH1wA5qhgARBgE8AXHAAUICLwAWAOQYhUNulB6GAlHAAvAB8GvLaHPicRACu3DjAjkYmYhLSULZ+NqmoUjJyWngIegZYjnRwjGkyQWGFGRQA2tIwDAC01HTAkoEARFW56b0AuhR+HCX6APRTcAAqAPKmCzZYTtgA1nAA7usw6zrbwtyoqJJwuHAxNML7wlAmMVDccABu4jHCEERwAAYMkkkImuuBAAFkTE4IJIaL84HhgPAGDQaMBDNx1B59tD1JdfvtgLC4Midhh0JNKuJBjIAHQAoEgsgQ7Ew2zFAwcuAzeZLFaVdZYLa7SGoQ4sB7EnAxcToCzE9AQI7nS4PGBPF6-ACimA8vEawzhJDIcAOqApHOMZkstgGeSgNAASgxtgAaOAOZxuDxeGA+bj+Gza1C6mD63SciNc2a-W3pR3OuGEv5BkO-N0AIxiSKwZSgkl8FwgcEkECwMRDDBgiW4bsRFHUWp1uVDBrgwB+v1V6uWYJc0NoNl9n1+5sj3KcMBgYBoVhmklQr2UYAeKJphkRThi6ZpiSmnXoTFQUxLZYrVccUwezAe8SP+7aDDAwCmN3C0Cm9LLdDIWKhMJpE4gOSkacmUGLwLGMjqIElLVPaTrbMS6hxBs3CKi8JIps2+oTCBHJgRUHr7NBsHUvaNJEOglZgo+NpUnaQShOyeERgRSLoOgYKOMRtQAIJQFAlgUaQIB0XBNIAI6fFAFgFAoUC8RxthNC07T7t0fREU4IxjOMo4sWx7qVmsvhcc4JEymZxEUcA6B8PY3FOIxdhaUhcAABJzGCAAyWG8H4O7cCcUBzMoMCBVg6AxPONAOZ67ioH4eksRGXbPEZ9BOKZjk0BwKUEMlKWGdIFgkVpNAUVRMA0WAcX7M5zH5fohkyuYpV8QJQlGqJWmSdJsmaPJinoMpzSVmptBVj0vQlTpSV5U1+hpRhHFtbl+mcvgekbRyy3FpY60gfgLoUsdiBwMtPZ9jFg5QJ8BW4QYe2QToJI5HackROwUTsPuykyoq6gMFcNw6Jcr5aPt1DwhhpF2hQbrIhY8QXA1FKGS9tSWu96SZAtzXlPAJW1C9a4mG1ykAFIMNw0oyWMNLbBumpKIIMChSoykAIxjPjxLbAwiIXDSkXAIKtglXpW2sEAA)
-- 🚧 [Example with Page Objects](https://www.typescriptlang.org/play?target=99&ssl=1&ssc=1&pln=23&pc=4#code/JYWwDg9gTgLgBAbzgZQKYBtUGMbTgXzgDMoIQ4ByGVAZxiwEMjUKBuAKHa3QZprgDCDTADsAJgyiJ2cWXDABXAEbpgWOFFQMxEEegCeGiBBgAuFBmy4oHOfOWr1m7boNwQumAAtzaTDmgOGTksXTooBQCoAAoASmk7O29gGgA6UhM4AF4Lf2toigBtCRgGAFpqOmAxLIAiRlEJKFqAXQpY20TZZLSPEW9suB704xhUomBxAuKGUoraGGq6vu9W9s7ZfE47RRU1OABzVBgAEQZ9aJWvADkGEFRzcMmD2N9LKISuuFCROndZrBeZ4AWU8XkGwyuqQA7sBvAAVVAADxglzBt3uHWCXR+fwkhhyIABQJEB1B-S840mYmmJXKlUWNVq+LWWK+GmOCigIjg+I2BHYW3YDIKwnQEGh-AYcAUNFQUlwcDleV5s1QcF0cGlDVQ4kkFAANFqaPoROp4FkAHyfWS4+A6vVSHIiVDQwTCXVNOL8u2qgnfD2O1JHU7nAoAKQYIgUkn07RhcK8AFEkQwcIiUQUAIzrbFa6EMOFDVLcNQAa2i+Kx+A6QA)
+<details>
+  <summary>🚧 Example with `Selector::addCustomMethods()`</summary>
+  
+  ```typescript
+import { Selector } from 'testcafe';
+
+interface CalendarSelector extends Selector {
+    getDay: (monthName: string) => Selector;
+}
+
+function getCalendar(): CalendarSelector {
+    const calendar = Selector('[data-testid="calendar"]');
+
+    // TODO: check whether we need to use the return value of `addCustomMethods` or it assigns methods to `this` as well
+    calendar.addCustomMethods({
+        // TODO: check whether we're actually alowed to return `Element[]` from here
+        getDay(calendarsRaw, monthName: string): Element[] {
+            // `calendarsRaw` is `Element`, but according to documentation, it's `Element[]` if `returnDOMNodes: true`
+            // https://devexpress.github.io/testcafe/documentation/reference/test-api/selector/addcustommethods.html
+            const calendars = calendarsRaw as unknown as Element[];
+
+            const months = calendars.flatMap(calendar => {
+                const allMonths = Array.from(calendar.querySelectorAll('[data-testid="month"]'));
+                const matchingMonths = allMonths.filter(month => (month as HTMLElement).innerText.includes(monthName));
+                return matchingMonths;
+            });
+            const days = months.flatMap(month => {
+                const allDays = Array.from(month.querySelectorAll('[data-testid="day"]'));
+                return allDays;
+            });
+
+            return days;
+        },
+    }, { returnDOMNodes: true });
+
+    return calendar as CalendarSelector;
+}
+
+test('allows a user to select date on a calendar', async t => {
+    const calendar = getCalendar();
+    const day = calendar.getDay('January').withExactText('1');
+    await t.click(day);
+});
+  ```
+
+  [Playground link](https://www.typescriptlang.org/play?target=99#code/JYWwDg9gTgLgBAbzgZQKYBtUGMbTgXzgDMoIQ4ByGVAZxiwEMjUKBuAKHeADtqoiGWVHADCDTNwAmDKGkw48qAB7UpNFBmy4oidnH1wA5qhgARBgE8AXHAAUICLwAWAOQYhUNulB6GAlHAAvAB8GvLaHPicRACu3DjAjkYmYhLSULZ+NqmoUjJyWngIegZYjnRwjGkyQWGFGRQA2tIwDAC01HTAkoEARFW56b0AuhR+HCX6APRTcAAqAPKmCzZYTtgA1nAA7usw6zrbwtyoqJJwuHAxNML7wlAmMVDccABu4jHCEERwAAYMkkkImuuBAAFkTE4IJIaL84HhgPAGDQaMBDNx1B59tD1JdfvtgLC4Midhh0JNKuJBjIAHQAoEgsgQ7Ew2zFAwcuAzeZLFaVdZYLa7SGoQ4sB7EnAxcToCzE9AQI7nS4PGBPF6-ACimA8vEawzhJDIcAOqApHOMZkstgGeSgNAASgxtgAaOAOZxuDxeGA+bj+Gza1C6mD63SciNc2a-W3pR3OuGEv5BkO-N0AIxiSKwZSgkl8FwgcEkECwMRDDBgiW4bsRFHUWp1uVDBrgwB+v1V6uWYJc0NoNl9n1+5sj3KcMBgYBoVhmklQr2UYAeKJphkRThi6ZpiSmnXoTFQUxLZYrVccUwezAe8SP+7aDDAwCmN3C0Cm9LLdDIWKhMJpE4gOSkacmUGLwLGMjqIElLVPaTrbMS6hxBs3CKi8JIps2+oTCBHJgRUHr7NBsHUvaNJEOglZgo+NpUnaQShOyeERgRSLoOgYKOMRtQAIJQFAlgUaQIB0XBNIAI6fFAFgFAoUC8RxthNC07T7t0fREU4IxjOMo4sWx7qVmsvhcc4JEymZxEUcA6B8PY3FOIxdhaUhcAABJzGCAAyWG8H4O7cCcUBzMoMCBVg6AxPONAOZ67ioH4eksRGXbPEZ9BOKZjk0BwKUEMlKWGdIFgkVpNAUVRMA0WAcX7M5zH5fohkyuYpV8QJQlGqJWmSdJsmaPJinoMpzSVmptBVj0vQlTpSV5U1+hpRhHFtbl+mcvgekbRyy3FpY60gfgLoUsdiBwMtPZ9jFg5QJ8BW4QYe2QToJI5HackROwUTsPuykyoq6gMFcNw6Jcr5aPt1DwhhpF2hQbrIhY8QXA1FKGS9tSWu96SZAtzXlPAJW1C9a4mG1ykAFIMNw0oyWMNLbBumpKIIMChSoykAIxjPjxLbAwiIXDSkXAIKtglXpW2sEAA)
+</details>
+
+<details>
+  <summary>🚧 Example with Page Objects</summary>
+
+  ```typescript
+import { Selector } from 'testcafe';
+
+class Calendar {
+    public readonly root: Selector;
+    public readonly month: Selector;
+
+    constructor() {
+        this.root = Selector('[data-testid="calendar"]');
+        this.month = this.root.find('[data-testid="month"]');
+    }
+
+    public getDay(monthName: string): Selector {
+        const matchingMonth = this.month.withText(monthName);
+        const day = matchingMonth.find('[data-testid="day"]');
+        return day;
+    }
+}
+
+test('allows a user to select date on a calendar', async t => {
+    const calendar = new Calendar();
+    const day = calendar.getDay('January').withExactText('1');
+    await t.click(day);
+});
+  ```
+
+  [Playground link](https://www.typescriptlang.org/play?target=99&ssl=1&ssc=1&pln=23&pc=4#code/JYWwDg9gTgLgBAbzgZQKYBtUGMbTgXzgDMoIQ4ByGVAZxiwEMjUKBuAKHa3QZprgDCDTADsAJgyiJ2cWXDABXAEbpgWOFFQMxEEegCeGiBBgAuFBmy4oHOfOWr1m7boNwQumAAtzaTDmgOGTksXTooBQCoAAoASmk7O29gGgA6UhM4AF4Lf2toigBtCRgGAFpqOmAxLIAiRlEJKFqAXQpY20TZZLSPEW9suB704xhUomBxAuKGUoraGGq6vu9W9s7ZfE47RRU1OABzVBgAEQZ9aJWvADkGEFRzcMmD2N9LKISuuFCROndZrBeZ4AWU8XkGwyuqQA7sBvAAVVAADxglzBt3uHWCXR+fwkhhyIABQJEB1B-S840mYmmJXKlUWNVq+LWWK+GmOCigIjg+I2BHYW3YDIKwnQEGh-AYcAUNFQUlwcDleV5s1QcF0cGlDVQ4kkFAANFqaPoROp4FkAHyfWS4+A6vVSHIiVDQwTCXVNOL8u2qgnfD2O1JHU7nAoAKQYIgUkn07RhcK8AFEkQwcIiUQUAIzrbFa6EMOFDVLcNQAa2i+Kx+A6QA)
+</details>
 
 Summary:
 
