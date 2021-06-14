@@ -236,6 +236,53 @@ Summary:
 - [[docs] Describe TestCafe current limitations · Issue #5196 · DevExpress/testcafe](https://github.com/DevExpress/testcafe/issues/5196)
 
 ## 🚧 Debug effectively
+
+What we typically want to debug:
+
+- selectors which don't match any existing elements
+- failing assertions or actions
+
+How it might look like in an ideal world:
+
+- we can enter the debugger, pause in the breakpoint, and interact with the failed Selector or write a new one via debugger console to highlight all matching elements
+- we can rerun, adjust or skip each failed step or statement without restarting the entire test
+
+A typical flow in the real world right now:
+
+- run tests with `--debug-on-fail` and non-headless browser e.g. `chrome`
+- if a test fails, inspect the page via browser DevTools
+  - go to the Elements tab and imitate failed `Selector` by querying the document manually e.g. `document.querySelectorAll('element')`
+  - go to the Network tab
+  - go to the Console tab to check uncaught exceptions
+- to inspect the page from a point in time before the error, call `await t.debug();` in the test
+- if there's `fixture.after` or `test.after` with UI manipulation inside, disable them for debugging because they are executed even if `--debug-on-fail` is activated
+
+Current debugging feature set:
+
+- ways to debug `Selector`:
+  - read error messages
+    - sometimes a chain of Selectors is displayed if Selector doesn't match any element
+  - get a snapshot of underlying DOM Node, if `Selector` matches any, but only as a part of the test, not in the debugger console, so it's like `console.log` and restarting the test from scratch every time
+  - write queries to browser DevTools
+    - `document.querySelectorAll('element')`
+    - this way we can imitate what we've written in tests with `Selector`
+    - it seems to be the most effective way to debug `Selector` now
+  - writing assertions from top-level to deeply nested elements
+    - e.g. page -> section -> subsection -> another small element
+    - this way you can quickly identify the error scope
+- ways to debug failed assertions or actions:
+  - no way to skip or re-run failed steps out of the box, requires patching TestCafe / its Babel plugins
+  - you can enter debug mode the same way as above and execute failed actions manually by clicking on the page
+  - assertions and actions typically fail because of Selectors, so the suggestions listed above can be applied here
+- using `debugger` is supported, but not usable enough in the real world:
+  - the browser will be disconnected if the browser script or test gets paused for more than 30 seconds:
+  - progress: https://github.com/DevExpress/testcafe/issues/2819
+- TestCafe APIs targeting the browser don't support execution in debugger console
+  - no DOM Node snapshots supported
+  - no Selector and ClientFunction execution supported
+  - no `await t.eval()` supported
+  - progress: https://github.com/DevExpress/testcafe/issues/3810
+
 ## 🚧 How to find elements on the page: nuances of `Selector`
 ## 🚧 How to speed up test execution
 ## 🚧 Useful extensions to TestCafe and recipes
