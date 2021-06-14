@@ -11,7 +11,7 @@ Contents:
 - 🚧 [use Page Object pattern](#-use-page-object-pattern)
 - 🚧 [TestCafe APIs to use with caution](#-testcafe-apis-to-use-with-caution)
 - 🚧 how to find elements on the page: nuances of `Selector`
-- 🚧 debug effectively
+- 🚧 [debug effectively](#-debug-effectively)
 - 🚧 how to speed up test execution
 - 🚧 [useful extensions to TestCafe and recipes](#-useful-extensions-to-testcafe-and-recipes)
 - 🚧 [further reading](#-further-reading)
