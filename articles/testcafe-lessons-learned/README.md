@@ -1,6 +1,6 @@
 # 🚧 Lessons learned from end-to-end testing with TestCafe
 
-This is a deep dive into workflow with TestCafe, overview of pain points, proposed solutions, and clarification of things which are missing or insufficiently described in the documentation.
+This is a deep dive into the workflow with TestCafe, an overview of pain points, proposed solutions, and clarification of things that are missing or insufficiently described in the documentation.
 
 Contents:
 
@@ -40,7 +40,7 @@ I'm going to publish a separate article on that.
 
 ### In approach to writing tests
 
-- readability is one of the top priorities since automated testing pays off compared to manual testing if tests live long (year and more) almost untounched and if they can be easily updated by other people
+- readability is one of the top priorities since automated testing pays off compared to manual testing if tests live long (year and more) almost untouched and if they can be easily updated by other people
 - tests should be stable; otherwise they will hardly be worth writing; stability doesn't come out of nowhere and requires test design, data preparation, and bullet-proof implementation
 - fragmentation is one of the things you should avoid the most; use the same approach, styleguide, tools, and utilities in the team, and continually improve them all
 - keep complexity within clear boundaries rather than spreading it across the codebase
@@ -61,11 +61,11 @@ I'm going to publish a separate article on that.
 - accelerates writing tests
   - catches typos and type-related issues at compile-time rather than at runtime
   - provides a nice autocomplete in editors such as VS Code
-    - so you don't have to remember every single method in TestCafe or your own utilities
+    - so you wouldn't have to remember every single method of TestCafe or your utilities
 - increases test maintainability
   - serves as up-to-date code documentation
   - enforces safer development practices thus making code more predictable and understandable
-  - supports modelling complex domains due to strongly-typed OOP and generics, compared to plain JavaScript
+  - supports modeling complex domains due to strongly-typed OOP and generics, compared to plain JavaScript
 
 <!--
 🚧 **TODO:** check whether DX is good with `tsc` + JSDoc instead of TypeScript. For multidisciplinary teams which don't have experience in strongly-typed programming languages, JSDoc might be simpler to start, yet providing basic type-checking and giving auto-completion in editors.
@@ -76,7 +76,7 @@ I'm going to publish a separate article on that.
 #### ESLint
 
 - accelerates writing tests by catching basic issues at compile-time (or rather writing time), not after minutes of debugging
-  - it catches more than just formatting issues: it can catch missing `await`, presense of `any`, or an accidentally skipped test
+  - it catches more than just formatting issues: it can catch missing `await`, presence of `any`, or an accidentally skipped test
 - increases test maintainability by enforcing a consistent code style
 
 #### Prettier
@@ -87,9 +87,9 @@ I'm going to publish a separate article on that.
 
 ## Don't rely on implementation details in tests too much
 
-Be careful with negative assertions, [because negative assertions can pass for the wrong reason](https://glebbahmutov.com/blog/negative-assertions/). Prefer positive assertions. For example, if you want to make sure that table has been loaded, it's generally better to check that at least one row is visible rather than checking that loading indicator (e.g. skeleton, spinner, or loadbar) is hidden.
+Be careful with negative assertions, [because they can pass for the wrong reason](https://glebbahmutov.com/blog/negative-assertions/). Prefer positive assertions. For example, if you want to make sure that the table has been loaded, it's generally better to check that at least one row is visible rather than checking that the loading indicator (e.g. skeleton, spinner, or load bar) is hidden.
 
-Avoid making assumptions about implementation of AUT (application under test), prefer checking what's visible to the end user. When you rely on implementation details such as specific HTML attributes or network requests, keep such logic in one place, under a facade. Otherwise, when implementation changes, you'll have to go through each affected test and update it separately.
+Avoid making assumptions about the implementation of AUT (application under test), prefer checking what's visible to the end user. When you rely on implementation details such as specific HTML attributes or network requests, keep such logic in one place, under a facade. Otherwise, when the implementation changes, you'll have to go through each affected test and update it separately.
 
 ## 🚧 Don't rely on unstable test data
 ## 🚧 Use Page Object pattern
@@ -106,13 +106,13 @@ Reading [Page Model](https://devexpress.github.io/testcafe/documentation/guides/
 
 ### Drawbacks of putting `Selector`s in the tests
 
-Let's assume that we assert a text field based on Material UI's [`TextField`](https://material-ui.com/components/text-fields/). It might have label, value, placeholder, helper text, contextual action, required state, disabled state, error state, focused state, and loading state. It's a fairly basic UI element, yet it has lots of aspects.
+Let's assume that we assert a text field based on Material UI's [`TextField`](https://material-ui.com/components/text-fields/). It might have a label, value, placeholder, helper text, contextual action, required state, disabled state, error state, focused state, and loading state. It's a fairly basic UI element, yet it has lots of aspects.
 
-When we rely on how text field expresses its state in the DOM in each test, we spread text field's implementation details across the codebase. This increases cognitive complexity and makes onboarding more difficult. Sometimes these states can't be retrieved in one line of code, but even when they can, it generally makes tests less readable, especially for another person after half a year.
+When we rely on how the text field expresses its state in the DOM in each test, we spread the text field's implementation details across the codebase. This increases cognitive complexity and makes onboarding more difficult. Sometimes these states can't be retrieved in one line of code, but even when they can, it generally makes tests less readable, especially for another person after half a year.
 
-You might have lots of different components, and each of them expresses the state in a special way. You have to keep in mind or double check all such details while writing tests. When you've made a mistake, most of the time you find this out after tens of seconds or even minutes, not immediately.
+You might have lots of different components, and each of them expresses the state in a special way. You have to keep in mind or double-check all such details while writing tests. When you've made a mistake, most of the time you find this out after tens of seconds or even minutes, not immediately.
 
-When we inline implementation details instead of abstracting them, we tend to choose the shortest path to solve a particular task. It makes code very specific to the task it solves. As a result, we make each piece of code unique, make the codebase fragmented, and give up code reusability. It also reduces space for optimizations of any kind in both tests and application.
+When we inline implementation details instead of abstracting them, we tend to choose the shortest path to solve a particular task. It makes code very specific to the task it solves. As a result, we make each piece of code unique, make the codebase fragmented, and give up code reusability. It also reduces space for optimizations of any kind in both tests and the application.
 
 When implementation details change, we have to find each affected test and fix it. It's a matter of "when", not "if". When your tests live long, they face breaking changes of libraries, migration to other libraries, introducing additional libraries for special cases, and different people. It's beneficial to leave some room for these long-term events.
 
@@ -229,7 +229,7 @@ Summary:
   - so there's no way to compose multiple extended selectors
 - custom methods don't support element manipulation inside e.g. calling `t.click()`, just like `ClientFunction`
 - TypeScript typedefs are verbose and flaky, type-safety is limited
-- note that the property getter or method's first argument (`node`) may be `null` if element doesn't exist, even though `testcafe` TypeScript typedefs say otherwise
+- note that the property getter or method's first argument (`node`) may be `null` if the element doesn't exist, even though `testcafe` TypeScript typedefs say otherwise
 
 ### Further reading
 
